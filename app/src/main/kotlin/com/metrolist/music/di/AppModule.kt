@@ -84,15 +84,18 @@ object AppModule {
         )
     }
 
-    @Singleton
+   @Singleton
     @Provides
     @DownloadCache
     fun provideDownloadCache(
         @ApplicationContext context: Context,
         databaseProvider: DatabaseProvider,
     ): SimpleCache {
+        val downloadDir = (context.getExternalFilesDir(android.os.Environment.DIRECTORY_MUSIC)
+            ?: context.filesDir).resolve("download")
+        downloadDir.mkdirs()
         return SimpleCache(
-            context.filesDir.resolve("download"),
+            downloadDir,
             NoOpCacheEvictor(),
             databaseProvider
         )
